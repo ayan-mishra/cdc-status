@@ -86,5 +86,16 @@ footer {
   .top { padding-top: 28px; }
   h1 { font-size: 24px; }
   .board { font-size: 14px; }
-  .board td { padding: 11px 8px; }
+  .board thead { display: none; }
+  .board, .board tbody, .board tr, .board td { display: block; width: 100%; }
+  .board tr {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    margin-bottom: 10px;
+    padding: 2px 0;
+  }
+  .board td { border: none; padding: 6px 14px; }
+  .board td:first-child { padding-top: 10px; }
+  .board td:last-child { text-align: right; padding-bottom: 10px; }
 }
