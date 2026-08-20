@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CDC Data Status — freshness of key CDC open-data feeds</title>
+<meta name="description" content="Unofficial board showing the latest observation in each key public-health feed on data.cdc.gov. Not affiliated with the CDC.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>CDC Data Status</h1>
+  <p class="sub">Latest observation in each key public-health feed on <a href="https://data.cdc.gov">data.cdc.gov</a>.<br>
+  Unofficial personal project — not affiliated with the CDC.</p>
+  <p class="status-line" id="status-line">Checking feeds…</p>
+</header>
+
+<main>
+  <div id="board" aria-live="polite"></div>
+  <p class="footnote">
+    Status is computed in your browser against the page load time: <strong>Fresh</strong> ≤ 14 days,
+    <strong>Stale</strong> 15–45 days, <strong>Frozen</strong> &gt; 45 days (annual feeds: current or previous calendar year).
+    A frozen feed may still be published elsewhere — this checks one known dataset per feed.
+    Queries go directly from your browser to CDC’s public Socrata API; no key, no account, no data collected.
+  </p>
+</main>
+
+<footer>
+  <p>Source: U.S. CDC open data portal (data.cdc.gov), Socrata API. Page is static — no backend, no tracking.</p>
+</footer>
+
+<script type="module">
+  import { DATASETS, checkDataset, boardHTML } from "./status.mjs";
+
+  const now = new Date();
+  const board = document.getElementById("board");
+  const line = document.getElementById("status-line");
+
+  try {
+    const results = await Promise.all(DATASETS.map((d) => checkDataset(d, now)));
+    const bad = results.filter((r) => r.status === "error").length;
+    board.innerHTML = boardHTML(results, now);
+    line.textContent = bad === 0
+      ? "All feeds checked."
+      : `Checked ${results.length - bad} of ${results.length} feeds; ${bad} could not be reached from your network.`;
+  } catch (e) {
+    line.textContent = "Could not check feeds from your network.";
+    board.innerHTML = `<p class="err">This page queries data.cdc.gov directly from your browser. If nothing loaded, the site may be blocked by your network — the feeds themselves may be fine.</p>`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "cdc-status",
+  "version": "0.1.0",
+  "description": "Unofficial freshness board for key CDC open-data feeds on data.cdc.gov",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
